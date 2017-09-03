@@ -1,7 +1,6 @@
 package com.launchcode.cheesemvc.models;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * Created by Josh Markus
@@ -17,11 +16,14 @@ public class Cheese {
     @Size(min=1, message = "Description must not be empty")
     private String description;
 
+    @Min(1)
+    @Max(5)
+    private int rating;
 
     private CheeseType type;
 
     private int cheeseId;
-    public static int nextId = 1;
+    private static int nextId = 1;
 
 
     public Cheese(String name, String description) {
@@ -32,7 +34,7 @@ public class Cheese {
 
     public Cheese() {
         cheeseId = nextId;
-        // nextId++;
+        nextId++;
     }
 
     public int getCheeseId() {
@@ -62,5 +64,13 @@ public class Cheese {
     public CheeseType getType() { return type; }
 
     public void setType(CheeseType type) { this.type = type; }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
 }

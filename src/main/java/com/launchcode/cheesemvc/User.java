@@ -1,10 +1,21 @@
 package com.launchcode.cheesemvc;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class User {
 
-    private String username;
-    private String email;
-    private String password;
+
+    private @NotNull @Size(min=5, max=15) String username;
+
+    private @NotEmpty @Email(message = "Please provide valid email") String email;
+
+    private @NotNull @Size(min=6, max=15) String password;
+
+    private @NotEmpty String verify;
 
     // constructor
     public User(String username, String email, String password) {
@@ -18,9 +29,7 @@ public class User {
         {}
 
     // getters & setters
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
     public void setUsername(String username) {
         this.username = username;
@@ -41,4 +50,9 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getVerify() { return verify; }
+
+    public void setVerify(String verify) {this.verify = verify; }
+
 }

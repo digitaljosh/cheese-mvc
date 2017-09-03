@@ -18,6 +18,11 @@
         <input class="form-control" th:field="*{description}" th:value="${cheese.description}" />
         <span th:errors="*{description}" class="error"></span>
     </div>
+    <div class="form-group">
+        <label th:for="rating">Rating:</label>
+        <input class="form-control" th:field="*{rating}" th:value="${cheese.rating}" />
+        <span th:errors="*{rating}" class="error"></span>
+    </div>
 
     <div class="form-group">
         <label th:for="type"></label>

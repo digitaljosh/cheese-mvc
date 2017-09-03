@@ -16,7 +16,6 @@ public class CheeseData {
     public static void add(Cheese newCheese) {
 
         cheeses.add(newCheese);
-        Cheese.nextId++;
 
     }
 
