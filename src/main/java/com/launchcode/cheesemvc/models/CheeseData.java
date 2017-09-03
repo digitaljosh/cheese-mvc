@@ -1,6 +1,7 @@
 package com.launchcode.cheesemvc.models;
 
 import java.util.ArrayList;
+import com.launchcode.cheesemvc.models.Cheese;
 
 public class CheeseData {
 
@@ -13,7 +14,10 @@ public class CheeseData {
 
     // add
     public static void add(Cheese newCheese) {
+
         cheeses.add(newCheese);
+        Cheese.nextId++;
+
     }
 
     // delete

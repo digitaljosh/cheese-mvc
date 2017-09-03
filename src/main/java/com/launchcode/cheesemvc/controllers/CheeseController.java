@@ -2,13 +2,17 @@ package com.launchcode.cheesemvc.controllers;
 
 
 import com.launchcode.cheesemvc.models.CheeseData;
+import com.launchcode.cheesemvc.models.CheeseType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 
 
 import com.launchcode.cheesemvc.models.Cheese;
+
+import javax.validation.Valid;
 
 /**
  * Created by Josh Markus
@@ -23,24 +27,38 @@ public class CheeseController {
     @RequestMapping(value = "")
     public String index(Model model) {
 
-            model.addAttribute("cheeses", CheeseData.getAll());
-            model.addAttribute("title", "My Cheeses");
+        model.addAttribute("cheeses", CheeseData.getAll());
+        model.addAttribute("title", "My Cheeses");
 
-            // display list of cheeses
-            return "cheese/index";
-        }
+        // display list of cheeses
+        return "cheese/index";
+    }
 
 
     // this handler displays the form
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String displayAddCheeseForm(Model model) {
         model.addAttribute("title", "Add Cheese");
+        // passes skeleton cheese object to form
+        model.addAttribute(new Cheese());
+        // returns array of cheese types
+        model.addAttribute("cheeseTypes", CheeseType.values());
         return "cheese/add";
     }
 
     // this handler processes the form
+    // @Valid specifies that cheese object properties
+    // follow the validation settings in Model (cheese.java)
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute Cheese newCheese) {
+    public String processAddCheeseForm(@ModelAttribute @Valid Cheese newCheese,
+                                       Errors errors, Model model) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Add Cheese");
+            model.addAttribute("cheeseTypes", CheeseType.values());
+            return "cheese/add";
+        }
+
         // model binding
         CheeseData.add(newCheese);
         return "redirect:";
@@ -70,29 +88,36 @@ public class CheeseController {
     public String displayEditForm(Model model, @PathVariable int cheeseId) {
         Cheese cheese = CheeseData.getById(cheeseId);
         // put it in model
-        /**
-        model.addAttribute("cheeseName", cheese.getName());
-        model.addAttribute("cheeseDescription", cheese.getDescription());
-        model.addAttribute("cheeseId", cheese.getCheeseId());
-        **/
         model.addAttribute("cheese", cheese);
+        model.addAttribute("cheeseTypes", CheeseType.values());
         //return appropriate template string
         return "cheese/edit";
     }
 
 
     @RequestMapping(value="edit")
-    public String processEditForm(@RequestParam String name,
-                                  @RequestParam int cheeseId,
-                                  @RequestParam String description) {
+    public String processEditForm(@RequestParam int cheeseId,
+                                  @RequestParam String name,
+                                  @RequestParam String description,
+                                  @RequestParam CheeseType type,
+                                  @ModelAttribute @Valid Cheese cheese,
+                                  Errors errors, Model model) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("cheese", cheese);
+            model.addAttribute("cheeseTypes", CheeseType.values());
+            //return appropriate template string
+            return "cheese/edit";
+        }
 
         // Query CheeseData for the cheese with the given id
-        Cheese cheese = CheeseData.getById(cheeseId);
+        Cheese cheeseToEdit = CheeseData.getById(cheeseId);
 
         // then update its name and description.
         // CheeseData.add(cheese);
-        cheese.setName(name);
-        cheese.setDescription(description);
+        cheeseToEdit.setName(name);
+        cheeseToEdit.setDescription(description);
+        cheeseToEdit.setType(type);
 
         // Redirect the user to the home page.
         return "redirect:";
